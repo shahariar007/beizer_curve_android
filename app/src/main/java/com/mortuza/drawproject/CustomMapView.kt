@@ -1,5 +1,6 @@
 package com.mortuza.drawproject
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
@@ -9,136 +10,7 @@ import android.view.View
 import kotlin.math.abs
 
 
-//class CustomMapView : View, View.OnTouchListener , GestureDetector.OnGestureListener {
-//    var canvass: Canvas? = null;
-//    var path: Path = Path()
-//    var leftBottom:Point =Point();
-//    var leftTop:Point =Point();
-//    var rightBottom:Point =Point();
-//    var rightTop:Point =Point();
-//    var paint = Paint()
-//    private var startPoint: Point = Point(0,0)
-//    private var endPoint: Point = Point(0,0)
-//    private var controlPoint1: Point = Point(0,0)
-//    private var controlPoint2: Point = Point(0,0)
-//
-//    private var isSwipingLeft = false
-//    private lateinit var gestureDetector: GestureDetector
-//    constructor(context: Context) : super(context)
-//    {
-//        setOnTouchListener(this);
-//        cc()
-//    }
-//    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-//    {
-//        setOnTouchListener(this);
-//        cc()
-//    }
-//    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-//    {
-//        setOnTouchListener(this);
-//        cc()
-//    }
-//
-//    fun cc() {
-//        setWillNotDraw(false);
-//       leftBottom= Point(0,height);
-//       leftTop= Point(0,0);
-//       rightBottom= Point(width,height);
-//       rightTop= Point(width,0);
-//        isFocusable = true;
-//        isFocusableInTouchMode = true;
-//        gestureDetector = GestureDetector(context,this)
-//        isClickable = true;
-//        paint = Paint()
-//        paint.color = Color.BLACK
-//        paint.strokeWidth = 25f
-//        paint.style = Paint.Style.STROKE
-//
-//        path = Path()
-//
-//        gestureDetector = GestureDetector(context, this)
-//    }
-//
-//    override fun onDraw(canvas: Canvas?) {
-//        super.onDraw(canvas)
-//        canvass=canvas
-//
-//      //  path.reset();
-//
-//        // Move to the starting point
-//        path.moveTo(startPoint.x.toFloat(), startPoint.y.toFloat());
-//
-//        // Draw the Bezier curve using the control points and end points
-//        path.cubicTo(controlPoint1.x.toFloat(),
-//            controlPoint1.y.toFloat(),
-//            controlPoint2.x.toFloat(), controlPoint2.y.toFloat(), endPoint.x.toFloat(), endPoint.y.toFloat()
-//        );
-//
-//        // Draw the path on the canvas
-//        canvas?.drawPath(path, paint);
-//    }
-//
-//    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-//        return gestureDetector.onTouchEvent(event)
-//    }
-//
-//
-//    override fun onDown(e: MotionEvent?): Boolean {
-//        return true
-//    }
-//
-//    override fun onFling(
-//        e1: MotionEvent,
-//        e2: MotionEvent,
-//        velocityX: Float,
-//        velocityY: Float
-//    ): Boolean {
-//        // Calculate the horizontal distance and velocity between the two touch events
-//        val deltaX = e2.x - e1.x
-//        val absVelocityX = Math.abs(velocityX)
-//
-//        // Check if it is a left swipe
-//        if (deltaX < 0 && absVelocityX > 200) {
-//            isSwipingLeft = true
-//
-//            // Define the control points and end points of the curve
-//            startPoint = Point(100, height / 2)
-//            endPoint = Point(width - 100, height / 2)
-//            controlPoint1 = Point(width / 3, height / 4)
-//            controlPoint2 = Point(width * 2 / 3, height * 3 / 4)
-//            Toast.makeText(context,"Click",Toast.LENGTH_LONG).show()
-//            // Invalidate the view to trigger a redraw
-//            invalidate()
-//        }
-//        return true
-//    }
-//
-//    override fun onLongPress(e: MotionEvent?) {
-//        // Do nothing
-//    }
-//
-//    override fun onScroll(
-//        e1: MotionEvent?,
-//        e2: MotionEvent?,
-//        distanceX: Float,
-//        distanceY: Float
-//    ): Boolean {
-//        // Do nothing
-//        return false
-//    }
-//
-//    override fun onShowPress(e: MotionEvent?) {
-//        // Do nothing
-//    }
-//
-//    override fun onSingleTapUp(e: MotionEvent?): Boolean {
-//        // Do nothing
-//        return false
-//    }
-//}
-class CustomMapView : View {
-
+class CustomMapView: View,View.OnTouchListener {
     private var paint: Paint? = null
     private var paint1: Paint? = null
     private var path: Path? = null
@@ -151,7 +23,7 @@ class CustomMapView : View {
     private var control1Y = 0f
     private var control2X = 0f
     private var control2Y = 0f
-
+    lateinit var zoomLevels:CustomTouchListener
     var leftBottom: Point = Point();
     var leftTop: Point = Point();
     var rightBottom: Point = Point();
@@ -169,30 +41,34 @@ class CustomMapView : View {
     private val SWIPE_THRESHOLD = 50
     private val SWIPE_VELOCITY_THRESHOLD = 100
 
-    constructor(context: Context?) : super(context) {
+    constructor(context: Context?) : super(context!!) {
         init()
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs) {
         init()
     }
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context, attrs, defStyleAttr
+        context!!, attrs, defStyleAttr
     ) {
         init()
     }
+//    init {
+//        init()
+//    }
 
     private fun init() {
         setWillNotDraw(false)
+        val colorValue1 = Color.parseColor("#5E000000")
         paint = Paint()
-        paint!!.color = Color.BLACK
-        paint!!.strokeWidth = 5f
+        paint!!.color = colorValue1
+        paint!!.strokeWidth = 3f
         paint!!.style = Paint.Style.STROKE
-        val colorValue = Color.parseColor("#1F5EDAF6")
+        val colorValue = Color.parseColor("#B25EDAF6")
         paint1 = Paint()
         paint1!!.color = colorValue
-       // paint1!!.strokeWidth = 25f
+        // paint1!!.strokeWidth = 25f
         paint1!!.style = Paint.Style.FILL
 
         path = Path()
@@ -200,6 +76,7 @@ class CustomMapView : View {
         isFocusableInTouchMode = true
         isClickable = true
         update();
+        setOnTouchListener(this)
     }
 
     private fun update() {
@@ -209,47 +86,49 @@ class CustomMapView : View {
         rightTop = Point(screenWidth, 0);
     }
 
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        val x = event.x
-        val y = event.y
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                var accessDownPoint = screenWidth / 3
-                if (accessDownPoint > event.x || (screenWidth - accessDownPoint) < event.x) {
-
-                    oldDownPressX = event.x
-                    oldDownPressY = event.y
-                }else
-                {
-                    oldDownPressX = -1000f
-                    oldDownPressY = event.y
-                }
-                drawInit()
-            }
-            MotionEvent.ACTION_MOVE -> {
-
-                var result = false
-                if (oldDownPressX == -1000f) return true
-                try {
-                    val diffX: Float = oldDownPressX - x
-                    if (abs(diffX) > SWIPE_THRESHOLD) {
-                        if (diffX > 0) {
-                            drawOn(false, x, y)
-                        } else {
-                            drawOn(true, x, y)
-                        }
-                        result = true
-                    }
-                } catch (exception: Exception) {
-                    exception.printStackTrace()
-                }
-                return result
-            }
-            MotionEvent.ACTION_UP -> drawOff();
-        }
-        // gestureDetector.onTouchEvent(event);
-        return true
-    }
+    @SuppressLint("ClickableViewAccessibility")
+//    override fun onTouchEvent(event: MotionEvent): Boolean {
+//        val x = event.x
+//        val y = event.y
+//        when (event.action) {
+//            MotionEvent.ACTION_DOWN -> {
+//                var accessDownPoint = screenWidth / 3
+//                if (accessDownPoint > event.x || (screenWidth - accessDownPoint) < event.x) {
+//
+//                    oldDownPressX = event.x
+//                    oldDownPressY = event.y
+//                }else
+//                {
+//                    oldDownPressX = -1000f
+//                    oldDownPressY = event.y
+//                }
+//                drawInit()
+//            }
+//            MotionEvent.ACTION_MOVE -> {
+//
+//                var result = false
+//                if (oldDownPressX == -1000f) {
+//                    return true
+//                }
+//                try {
+//                    val diffX: Float = oldDownPressX - x
+//                    if (abs(diffX) > SWIPE_THRESHOLD) {
+//                        if (diffX > 0) {
+//                            drawOn(false, x, y)
+//                        } else {
+//                            drawOn(true, x, y)
+//                        }
+//                        result = true
+//                    }
+//                } catch (exception: Exception) {
+//                    exception.printStackTrace()
+//                }
+//                return result
+//            }
+//            MotionEvent.ACTION_UP -> drawOff();
+//        }
+//        return true
+//    }
 
     private fun drawInit() {
         startX = leftTop.x.toFloat()
@@ -309,13 +188,23 @@ class CustomMapView : View {
         }
     }
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
+//    override fun onDraw(canvas: Canvas) {
+//        super.onDraw(canvas)
+//
+//        // Draw the path on the canvas
+//        path?.let {
+//            canvas.drawPath(it, paint!!)
+//            canvas.drawPath(it, paint1!!)
+//
+//        }
+//    }
 
-        // Draw the path on the canvas
+    override fun draw(canvas: Canvas?) {
+        super.draw(canvas)
         path?.let {
-            canvas.drawPath(it, paint!!)
-            canvas.drawPath(it, paint1!!)
+            canvas?.drawPath(it, paint!!)
+            canvas?.drawPath(it, paint1!!)
+
         }
     }
 
@@ -329,5 +218,54 @@ class CustomMapView : View {
         screenHeight = h
         screenWidth = w
         update()
+    }
+    fun setZoomListener(zoomLevel: CustomTouchListener)
+    {
+        zoomLevels =zoomLevel;
+    }
+
+    override fun onTouch(v: View?, event: MotionEvent): Boolean {
+        val x = event.x
+        val y = event.y
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                var accessDownPoint = screenWidth / 4
+                if (accessDownPoint > event.x || (screenWidth - accessDownPoint) < event.x) {
+
+                    oldDownPressX = event.x
+                    oldDownPressY = event.y
+                }else
+                {
+                    oldDownPressX = -1000f
+                    oldDownPressY = event.y
+                }
+                drawInit()
+            }
+            MotionEvent.ACTION_MOVE -> {
+
+                var result = false
+                if (oldDownPressX == -1000f) {
+                    return false
+                }
+                try {
+                    val diffX: Float = oldDownPressX - x
+                    if (abs(diffX) > SWIPE_THRESHOLD) {
+                        if (diffX > 0) {
+                            drawOn(false, x, y)
+                            zoomLevels.onZoomLevel(y,"DrawLeft",screenHeight.toFloat())
+                        } else {
+                            drawOn(true, x, y)
+                            zoomLevels.onZoomLevel(y,"DrawLeft",screenHeight.toFloat())
+                        }
+                        result = true
+                    }
+                } catch (exception: Exception) {
+                    exception.printStackTrace()
+                }
+                return result
+            }
+            MotionEvent.ACTION_UP -> drawOff();
+        }
+        return false
     }
 }
