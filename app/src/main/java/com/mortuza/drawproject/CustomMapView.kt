@@ -163,9 +163,9 @@ class CustomMapView: View,View.OnTouchListener {
         } else if (isDrawing) {
             startX = rightTop.x.toFloat()
             startY = rightTop.y.toFloat()
-            control1X = (x + startX+ 200) / 2
+            control1X = (x + startX+ 200) / 3f
             control1Y = y
-            control2X = (x + startX+ 200) / 2
+            control2X = (x + startX+ 200) / 3f
             control2Y = y
             endX = rightBottom.x.toFloat()
             endY = rightBottom.y.toFloat()
