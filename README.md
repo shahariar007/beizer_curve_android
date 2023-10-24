@@ -1,4 +1,4 @@
-#  beizer_curve_android
+#  Bezier_curve_android
 <div align="left">
       <a href="https://youtube.com/shorts/87KuOR5hZVA">
          <img src="https://img.youtube.com/vi/87KuOR5hZVA/0.jpg" style="width:100%;">
